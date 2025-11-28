@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 export default function Home() {
   return (
-    <div className="flex flex-col items-center m-20 -mt-56 gap-8">
+    <div className="flex flex-col items-center m-20 gap-8">
       <h1 className="text-3xl font-bold  mb-10">Selecione uma Seção</h1>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full max-w-full">
