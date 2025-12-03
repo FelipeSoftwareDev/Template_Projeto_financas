@@ -40,7 +40,7 @@ export default function Login() {
             <div className="flex justify-between gap-2">
               <button 
                 type="submit"
-                className="flex-1 text-white p-2 rounded"
+                className="flex-1 b1 text-white p-2 rounded"
               >
                 Entrar
               </button>
@@ -48,7 +48,7 @@ export default function Login() {
               <button 
                 type="button"
                 onClick={() => navigate("/register")}
-                className="flex-1 text-white p-2 rounded"
+                className="flex-1 b1 text-white p-2 rounded"
               >
                 Registrar
               </button>

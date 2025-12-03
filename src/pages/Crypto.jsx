@@ -5,20 +5,39 @@ import ChartFrame from "../components/ChartFrame";
 
 export default function Crypto() {
   const [symbol, setSymbol] = useState("");
-  const [chart, setChart] = useState("");
+  const [chart, setChart] = useState(null);
 
-  async function fetchChart() {
-    const res = await fetch(`http://localhost:8000/crypto/${symbol}`);
-    const blob = await res.blob();
-    setChart(URL.createObjectURL(blob));
+async function fetchChart() {
+  const cleanSymbol = symbol.toUpperCase().replace(/[^A-Z0-9]/g, "");
+
+  if (!cleanSymbol) {
+    alert("Símbolo inválido");
+    return;
   }
+
+  const res = await fetch("http://127.0.0.1:8000/api/crypto-chart/", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ symbol: cleanSymbol }),
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    alert(data.error || "Erro ao buscar gráfico");
+    return;
+  }
+
+  // 🔥 SALVAR O GRÁFICO NO STATE
+  setChart(`data:image/png;base64,${data.chart}`);
+}
 
   return (
     <MainLayout>
-      {/* ---------- FULL PAGE CONTAINER ---------- */}
+      {/* ---------- CONTAINER DA PÁGINA ---------- */}
       <div className="w-full min-h-screen bg-gray-100 flex p-6 gap-6">
 
-        {/* ---------- LEFT CONTENT (GRAPH AREA) ---------- */}
+        {/* ---------- ÁREA DO GRÁFICO ---------- */}
         <div className="flex-1 bg-white rounded-xl shadow p-8 flex flex-col">
 
           <h1 className="text-4xl font-bold mb-8 text-gray-900">
@@ -33,11 +52,13 @@ export default function Crypto() {
               value={symbol}
               onChange={(e) => setSymbol(e.target.value)}
               placeholder="Ex: BTC"
+              onEnter={fetchChart}
+              
             />
 
             <button
               onClick={fetchChart}
-              className="bg-black text-white px-6 py-3 rounded-lg shadow hover:bg-gray-800 transition"
+              className="bg-black text-white px-6 py-3 rounded-lg shadow hover:bg-blue-600 transition"
             >
               Gerar
             </button>
@@ -53,9 +74,9 @@ export default function Crypto() {
 
         </div>
 
-        {/* ---------- RIGHT SIDEBAR (FORUM STYLE) ---------- */}
+        {/* ---------- sidebar chat ---------- */}
         <div className="w-[32%] hidden lg:flex flex-col bg-white rounded-xl shadow p-6">
-          <h2 className="text-2xl font-bold mb-4">Discussões</h2>
+          <h2 className="text-2xl font-bold mb-4 text-black">Discussões</h2>
 
           <div className="flex-1 overflow-y-auto space-y-4">
 
@@ -83,9 +104,9 @@ export default function Crypto() {
           </div>
 
           {/* Caixa de nova publicação */}
-          <div className="mt-6">
+          <div className="mt-6 border-black text-gray-700">
             <textarea
-              className="w-full p-3 border rounded-lg bg-gray-50 resize-none"
+              className="border-black border-0.5 w-full p-3 border rounded-lg bg-gray-50 resize-none"
               rows="3"
               placeholder="Compartilhe algo..."
             />
